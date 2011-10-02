@@ -27,8 +27,8 @@ class Sender(vk.API):
                     h(self,post)
         else:
             for post in posts[1:]:
-                #if post['date']<since:
-                #    continue
+                if post['date']<since:
+                    continue
                 for h in self._handlers:
                     h(self,post)
         return posts
@@ -60,7 +60,6 @@ class TwitterSender(object):
         if len(mes)+len(link)>140:
             mes=mes[:140-len(link)]
         mes+=link
-        #print(mes)
         status=self._api.PostUpdate(mes)
         print(status.text)
 
