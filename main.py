@@ -61,25 +61,22 @@ class TwitterSender(object):
             mes=mes[:140-len(link)]
         mes+=link
         status=self._api.PostUpdate(mes)
-        print(status.text)
+        #print(status.text)
 
 if __name__=='__main__':
     api=Sender(app_settings)
+    api.authorize(user_settings)
+    api.add_handler(TwitterSender(twitter_settings))
     if os.path.exists('state.dat'):
         with open('state.dat','rb') as f:
             state=pickle.load(f)
-            api.users_cache=state['users_cache']
+        api.users_cache=state['users_cache']
+        api.wall_get(group_id,since=state['last_run'])
     else:
-        state={'last_run':time.time()}
-    api.authorize(user_settings)
-    '''def printer(api,post):
-        if 'attachments' not in post:
-            user=api.get_profiles((str(post['from_id']),),('first_name','last_name'))[0]
-            print(user['first_name'][0]+'.',user['last_name'],post['date'],post['text'])
-    api.add_handler(printer)'''
-    api.add_handler(TwitterSender(twitter_settings))
-    api.wall_get(2637047,since=state['last_run'])
+        state={}
+        api.wall_get(group_id)
     with open('state.dat','wb') as f:
         state['users_cache']=api.users_cache
+        state['last_run']=time.mktime(time.localtime())
         pickle.dump(state,f)
 #todo: catch KeyBoardInterrupt
