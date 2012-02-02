@@ -66,8 +66,8 @@ class TwitterSender(object):
         #print(status.text)
 
 if __name__ == '__main__':
-    api = Sender(app_settings)
-    api.authorize(user_settings)
+    api = Sender(app_settings, user_settings=user_settings)
+    #api.authorize(user_settings)
     api.add_handler(TwitterSender(twitter_settings))
     if os.path.exists('state.dat'):
         with open('state.dat', 'rb') as f:
